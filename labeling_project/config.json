@@ -1,0 +1,36 @@
+{
+  "title": "Label Studio",
+  "protocol": "http://",
+  "host": "0.0.0.0",
+  "port": 8080,
+  "debug": true,
+  "label_config": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/config.xml",
+  "input_path": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/tasksdb.json",
+  "output_dir": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/completions",
+  "instruction": "Type some <b>hypertext</b> for label experts!",
+  "allow_delete_completions": true,
+  "templates_dir": "examples",
+  "editor": {
+    "debug": true
+  },
+  "sampling": "sequential",
+  "ml_backends": [
+    {
+      "url": "http://0.0.0.0:9090/",
+      "name": "labeling_project17cc"
+    }
+  ],
+  "source": {
+    "name": "Tasks",
+    "type": "jsonDB",
+    "path": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/tasksdb.json"
+  },
+  "target": {
+    "name": "Completions",
+    "type": "completions-dir",
+    "path": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/completions"
+  },
+  "config_path": "C:/React/label-studio-server/label-studio-server/label-studio/labeling_project/config.json",
+  "label_config_updated": true,
+  "load_source": false
+}

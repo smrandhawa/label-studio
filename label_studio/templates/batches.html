@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block body %}
+{% raw %}
+  <script src="static/js/polyfill.min.js"></script>
+  <script src="static/js/vue.js"></script>
+  <script src="static/js/lsf-sdk.js"></script>
+  <script src="static/js/mousetrap.min.js"></script>
+
+  <link rel="stylesheet" href="static/css/tasks.css">
+
+    <div class="ui task-container">
+
+      <div class="ui grid stackable" ref="grid">
+        <div class="column sixteen wide" id="left-panel">
+          <!-- Table -->
+          <div class="table-wrapper">
+            <table class="task-table center-margin">
+              <thead>
+
+              <!-- Header -->
+              <tr>
+                <th class="order">#</th>
+                <th class="order" >Name</th>
+                <th class="order" >Task Type</th>
+                <th class="order" >hexID</th>
+{% endraw %}
+                  {% if user.is_admin == True %}
+                    <th class="order" >Remove Tasks</th>
+                  {% endif %}
+{% raw %}
+              </tr>
+
+              </thead>
+{% endraw %}
+
+              <tbody>
+              {% for batch in batches %}
+                  <tr >
+                      <td><a href= "/{{ batch.hexID }}">{{batch.id}}</a></td>
+                      <td><a href= "/{{ batch.hexID }}">{{batch.data}}</a></td>
+                      <td><a href= "/{{ batch.hexID }}">{{batch.Type}}</a></td>
+                      <td><a href= "/{{ batch.hexID }}">{{batch.hexID}}</a></td>
+                      {% if user.is_admin == True %}
+                          <td>
+                            <a class="trash" onClick="dellTasks({{batch.id}})">
+                              <i class="far fa-trash-alt trash remove-task"></i>
+                            </a>
+                          </td>
+                      {% endif %}
+                  </tr>
+                 {% endfor %}
+{% raw %}
+
+              </tbody>
+            </table>
+          </div>
+        <!--
+<div class="form-popup" id="myForm">
+    <form action="/action_page.php" class="form-container">
+        <h1>Login</h1>
+
+        <label for="email"><b>Email</b></label>
+        <input type="text" class="ls-input" placeholder="Enter Email" name="email" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <button type="submit" class="btn">Login</button>
+        <button type="submit" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+</div>
+-->
+          <div class="ui divider hidden"></div>
+          <div class="mobile-divider"></div>
+        </div> <!-- left column -->
+
+    </div>
+
+
+  </div>
+<script>
+
+function dellTasks(batchid)
+{
+    const req = Requests.poster(`${API_URL.MAIN}/PROJECT/batch/delTasks?batchid=` + batchid   );
+    req.then(function(httpres) {
+        httpres.json().then(function(res) {
+        if (res) {
+            if (res.Error) {
+                $('body').toast({
+                  class: 'error',
+                  title: 'Empty Response',
+                  message: '<pre>' + res.msg + '</pre>',
+                  displayTime: 3000,
+                  position: 'bottom center'
+                });
+            } else {
+                $('body').toast({
+                  class: 'success',
+                  title: 'Task Deleted',
+                  message: '<pre>' + res.msg + '</pre>',
+                  displayTime: 3000,
+                  position: 'bottom center'
+                });
+            }
+        }
+        });
+    });
+}
+
+
+</script>
+
+{% endraw %}
+{% endblock %}

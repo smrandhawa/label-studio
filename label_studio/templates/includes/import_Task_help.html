@@ -1,0 +1,164 @@
+<div class="ui message accordion">
+
+  <div class="header active title"><i class="dropdown icon"></i>Layout Import formats and examples</div>
+  <div class="content active">
+      <a class="use-template ui label basic" data-tippy-content="One task per one line. Download file example"
+       href="static/samples/samplelayout.csv">Sample File</a>
+      <div style="margin-top:0.75em"></div>
+    <div class="ui labels">
+      <div style="margin-top:0.75em"></div>
+        <table>
+            <tr>
+                <td></td>
+                <td>Data</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>&lt;View&gt;&lt;HyperText name=&quot;video&quot; value=&quot;$video&quot;/&gt;&lt;Choices name=&quot;type&quot; toName=&quot;video&quot; choice=&quot;single-radio&quot;&gt;&lt;Choice value=&quot;Awesome&quot; /&gt;&lt;Choice value=&quot;Groove&quot; /&gt;&lt;/Choices&gt;&lt;/View&gt;&quot;</td>
+            </tr>
+        </table>
+    </div>
+  </div> <!-- content -->
+  <div class="header  title"><i class="dropdown icon"></i>Task Import formats and examples</div>
+  <div class="content ">
+        <div class="use-template ui label basic">
+            Use CSV in following format
+        </div>
+          <a class="use-template ui label basic" data-tippy-content="One task per one line. Download file example"
+       href="static/samples/sampleTask.csv">Sample File</a>
+      <div style="margin-top:0.75em"></div>
+    <div class="ui labels">
+      <div style="margin-top:0.75em"></div>
+        <table>
+    <tr>
+        <td></td>
+        <td>Text Data</td>
+        <td>Layout ID</td>
+        <td>Ground Truth</td>
+        <td>Format Type</td>
+        <td>Batch ID</td>
+        <td>Description</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>https://media.giphy.com/media/gHESxcxb2VUNlAdvmB/giphy.gif</td>
+        <td>5</td>
+        <td> </td>
+        <td>1</td>
+        <td>2</td>
+        <td>Instruction: XXX</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Lesson 7: Identifying the difference between fact and opinion https://t.co/eLmWabx35R</td>
+        <td>1</td>
+        <td></td>
+        <td>2</td>
+        <td>2</td>
+        <td>Instruction: XXX</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Arizona border activist who gave water to migrants faces second trial https://t.co/SCFehNRdo1</td>
+        <td>1</td>
+        <td></td>
+        <td>3</td>
+        <td>2</td>
+        <td>Instruction: XXX</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>https://media.giphy.com/media/gHESxcxb2VUNlAdvmB/giphy.gif</td>
+        <td>5</td>
+        <td> </td>
+        <td>1</td>
+        <td>1</td>
+        <td>Instruction: XXX</td>
+    </tr>
+
+    <tr>
+        <td>5</td>
+        <td>To have faith is to trust yourself to the water</td>
+        <td>2</td>
+        <td></td>
+        <td>2</td>
+        <td>1</td>
+        <td>Instruction: XXX</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Calif. wildfires signal the arrival of a planetary fire age https://t.co/Vvo9noqQfA</td>
+        <td>2</td>
+        <td></td>
+        <td>3</td>
+        <td>1</td>
+        <td>Instruction: XXX</td>
+    </tr>
+
+</table>
+
+{#        </div>#}
+
+{#      {% if 'json' in project.supported_formats %}#}
+{#        <a class="use-template ui label basic" data-tippy-content="The most flexible format. Download file example"#}
+{#           href="api/import-example-file?q=json">JSON</a>#}
+{#      {% endif %}#}
+{#      {% if 'csv' in project.supported_formats %}#}
+{#        <a class="use-template ui label basic" data-tippy-content="Download file example"#}
+{#           href="api/import-example-file?q=csv">CSV</a>#}
+{##}
+{#      {% endif %}#}
+{#      {% if 'tsv' in project.supported_formats %}#}
+{#        <a class="use-template ui label basic"#}
+{#           data-tippy-content="The same as CSV, but TABs are instead of commas. Download file example"#}
+{#           href="api/import-example-file?q=tsv">TSV</a>#}
+{#      {% endif %}#}
+{##}
+{#      {% if 'txt' in project.supported_formats %}#}
+{#        <a class="use-template ui label basic" data-tippy-content="One task per one line. Download file example"#}
+{#           href="api/import-example-file?q=txt">TXT</a>#}
+{#      {% endif %}#}
+{#      <br/>#}
+{##}
+{#      <div class="ui label basic"#}
+{#           data-tippy-content="Make ZIP archive with large or multiple:<div class='ui mini grey labels'>#}
+{#                                {% if 'json' in project.supported_formats %}<div class='ui label'>JSON</div>{% endif %}#}
+{#                                {% if 'csv' in project.supported_formats %}<div class='ui label'>CSV</div>{% endif %}#}
+{#                                {% if 'tsv' in project.supported_formats %}<div class='ui label'>TSV</div>{% endif %}#}
+{#                                {% if 'txt' in project.supported_formats %}<div class='ui label'>TXT</div>{% endif %}#}
+{#                               </div>">ZIP</div>#}
+{#      <div class="ui label basic"#}
+{#           data-tippy-content="Make RAR archive with large or multiple: <div class='ui mini grey labels'>#}
+{#                                {% if 'json' in project.supported_formats %}<div class='ui label'>JSON</div>{% endif %}#}
+{#                                {% if 'csv' in project.supported_formats %}<div class='ui label'>CSV</div>{% endif %}#}
+{#                                {% if 'tsv' in project.supported_formats %}<div class='ui label'>TSV</div>{% endif %}#}
+{#                                {% if 'txt' in project.supported_formats %}<div class='ui label'>TXT</div>{% endif %}#}
+{#                               </div>">RAR</div>#}
+{#      <div class="ui label basic"#}
+{#           data-tippy-content="Import multiple files at once: <div class='ui mini grey labels'>#}
+{#                                {% if 'json' in project.supported_formats %}<div class='ui label'>JSON</div>{% endif %}#}
+{#                                {% if 'csv' in project.supported_formats %}<div class='ui label'>CSV</div>{% endif %}#}
+{#                                {% if 'tsv' in project.supported_formats %}<div class='ui label'>TSV</div>{% endif %}#}
+{#                                {% if 'txt' in project.supported_formats %}<div class='ui label'>TXT</div>{% endif %}#}
+{#                               </div>">Multiple Files At Once</div>#}
+{##}
+{#      <div style="margin-top:0.75em"></div>#}
+
+{#      <a class="ui label basic" target="_blank"#}
+{#         data-tippy-content="Quickly generate dataset by keywords"#}
+{#         href='https://data.heartex.net/?data_types={{ project.data_types_json }}'>#}
+{#         Add Sample Dataset#}
+{#      </a>#}
+{##}
+{#      <a onclick="add_sample_task()" class="use-template ui small label basic primary"#}
+{#         data-tippy-content="Import sample task in one click" data-delay="[2000, 0]"#}
+{#         href="javascript:void(0)">Add Sample Task</a>#}
+{##}
+{#      <div style="margin-top:0.9em"></div>#}
+{##}
+{#      <a href="https://labelstud.io/guide/tasks.html">#}
+{#        Read more</a> about import in our documentation#}
+    </div>
+  </div> <!-- content -->
+
+</div>

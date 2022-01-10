@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ config['title'] }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8"/>
+
+  <link rel="shortcut icon" href="static/favicon.ico"/>
+  <link rel="stylesheet" href="../static/fonts/dosis/dosis.css">
+  <link rel="stylesheet" href="../static/css/reset.css">
+  <link rel="stylesheet" href="../static/css/main.css?v2">
+  <link rel="stylesheet" href="../static/css/fontall.min.css">
+  <link rel="stylesheet" href="../static/semantic/semantic.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+{#  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/3.0.1/introjs.min.css">#}
+{#    <link rel="stylesheet" href="https://shepherdjs.dev/dist/css/shepherd.css"/>#}
+  <script src="../static/js/Autointro.js"></script>
+  <script src="../static/js/jquery.min.js"></script>
+  <script src="../static/semantic/semantic.min.js"></script>
+  <script src="../static/js/js.cookie.js"></script>
+  <script src="../static/js/popper.min.js"></script>
+  <script src="../static/js/tippy-bundle.umd.min.js"></script>
+  <script src="../static/js/helpers.js?v3"></script>
+
+  <script src="https://browser.sentry-cdn.com/5.17.0/bundle.min.js"
+          integrity="sha384-lowBFC6YTkvMIWPORr7+TERnCkZdo5ab00oH5NkFLeQUAmBTLGwJpFjF6djuxJ/5"
+          crossorigin="anonymous"></script>
+  <script>
+    if (typeof Sentry !== 'undefined') {  // sentry could be unavailable if no internet connection
+      Sentry.init({dsn: 'https://f24f3e8da54c4a16a1ce9bef30ea9c30@o227124.ingest.sentry.io/5285295'});
+    }
+  </script>
+
+  <!-- Editor CSS -->
+  {% for css in editor_css %}
+    <link href="{{ css }}" rel="stylesheet">
+  {% endfor %}
+
+  <!-- Editor JS -->
+  {% for js in editor_js %}
+    <script src="{{ js }}"></script>
+  {% endfor %}
+<style type="text/css">
+.customTooltip {
+  color: #4a4a4a;
+  {#font-size: 18px;#}
+    max-width: 600px;
+    width: 500px;
+}
+
+.helpBtn{
+background: #52c41a; background-color: #52c41a; color: white;
+}
+
+
+.exitbtn {
+/*text-align: center;
+    display: inline;
+    float: right;
+    padding: 2%;
+    margin: 2%;
+    color: white;
+    width: 100%;
+    background-color: #ff2828;
+    font-size: 1.6em;
+    font-family: sans-serif;*/
+
+
+/*    hsl(27,90%,70%);
+    --orange-400: hsl(27,90%,55%);*/
+
+/*    color: hsl(0,0%,100%);
+    background-color: hsl(358,62%,52%);
+    box-shadow: inset 0 1px 0 0 hsl(0deg 0% 100% / 40%);
+    position: relative;
+    float: right;
+    display: inline-block;
+    padding: 0.7em;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    /*margin: 2%;*/
+/*    outline: none;
+    font-size: 1.5em;
+    font-weight: normal;
+    font-family: sans-serif;
+    line-height: 1.15384615;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;*/
+
+
+    color: hsl(0,0%,100%);
+    background-color: hsl(358,62%,52%);
+    box-shadow: inset 0 1px 0 0 hsl(0deg 0% 100% / 40%);
+    position: relative;
+    float: right;
+    display: inline-block;
+    padding: 0.7em;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: normal;
+    font-family: sans-serif;
+    line-height: 1.15384615;
+    text-align: center;
+    cursor: pointer;
+
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div id="header">
+  {% if user.is_admin == True %}
+    <a id="logo" href="/">
+    <img src="../static/images/ls_logo.png" alt="label studio logo" class="img-logo">
+    <span class="img-text" id="logo-text">{% if config['description'] and config['description'] != 'default' %}
+      {{ config['description'] }}
+    {% else %}
+      {{ config['title'] }}
+    {% endif %}</span>
+  </a>
+  {% endif %}
+
+  {% if user.is_admin == False %}
+    <img src="../static/images/ls_logo.png" alt="label studio logo" class="img-logo">
+    <span class="img-text" id="logo-text">{% if config['description'] and config['description'] != 'default' %}
+      {{ config['description'] }}
+    {% else %}
+      Labelling 
+    {% endif %}</span>
+  {% endif %}
+  
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+      {% endif %}
+{% endwith %}
+  <ul id="nav">
+  &nbsp;
+
+    {% if user.is_admin == True %}
+{#        <a id="menu-import" href="import" class="{% if url_for(request.endpoint) == '/importTasks' %}active{% endif %}"#}
+{#           style="display:{{'block' if project and project.can_manage_tasks else 'none'}}">Import</a>#}
+
+        <a href="importTasks" class="{% if url_for(request.endpoint) == '/importTasks' %}active{% endif %}">Import</a>
+
+{#        <a href="export" class="{% if url_for(request.endpoint) == '../export' %}active{% endif %}">Export</a>#}
+
+{#        <a href="model" class="{% if url_for(request.endpoint) == '../model' %}active{% endif %}">Model</a>#}
+
+        <a href="setup" class="{% if url_for(request.endpoint) == 'setup' %}active{% endif %}">Setup</a>
+        <a href="batches" class="{% if url_for(request.endpoint) == 'batches' %}active{% endif %}">Batch Info</a>
+
+{#        <span>#}
+{#          <a class="outside-links first" href="https://labelstud.io/guide/" target="_blank">Docs</a>#}
+{##}
+{#          <a class="outside-links" href="https://github.com/heartexlabs/label-studio" target="_blank">#}
+{#            <img height="22" onerror="this.src='static/images/github.png'" src="https://static.labelstud.io/images/github.svg?sid={{ g.sid }}"/>#}
+{#          </a>#}
+{##}
+{#          <a class="outside-links last" href="https://join.slack.com/t/label-studio/shared_invite/zt-cr8b7ygm-6L45z7biEBw4HXa5A2b5pw"#}
+{#             data-tooltip="If you have found a bug or have questions ping us in Slack" data-position="bottom right"#}
+{#             target="_blank"><img src="../static/images/slack.png" height="22"/>#}
+{#          </a>#}
+{#        </span>#}
+    {% endif %}
+
+    {% if user.is_admin == True %}
+      {% if batchid  %}
+        <a href="../{{ batchid }}" class="{% if url_for(request.endpoint) == '/' %}active{% endif %}">Labeling</a>
+        <a href="../tasks?batchid={{ batchid }}" class="{% if url_for(request.endpoint) == '/tasks' %}active{% endif %}">Tasks</a>
+      {% endif %}
+      <li>{{ user.name }}</li>
+      <li><a href="../logout">Logout</a></li>
+    {% endif %}
+
+
+    {% if user.is_admin == False %}
+      {% if batchid  %}
+        <a href="../{{ batchid }}" class="{% if url_for(request.endpoint) == '/' %}active{% endif %}">Labeling</a>
+      {% endif %}
+      <!-- <li> Worker ID is : {{ user.workerId }}</li> -->
+    {% endif %}
+
+<!--     {% if user %}
+    <div class="exitbutton">
+      <a href="/survey?workerId={{user.workerId}}" title="exit">
+
+      </a>
+      <a class="exitbutton" href="">
+          Exit
+      </a>
+    </div>
+    {% endif %} -->
+
+    {% if user.workerId != None %}
+
+    <button type="button" onClick="exittasks('{{user.workerId}}')" class="exitbtn">
+      Exit labelling </button>
+    {% endif %}
+
+
+  </ul>
+</div>
+
+{% block body %}
+  <div>Heidi is an Opossum!</div>
+{% endblock %}
+
+<br>
+<script>
+  $(function() {
+    tippy('[data-tippy-content]', {allowHTML: true});
+  });
+
+  // hide logo if it intersects with menu
+  $(window).resize(function() {
+    var logo = $('#logo-text');
+    logo.show();  // show logo text to calc its position
+    if (logo.offset().left + logo.width() >= $('#nav').offset().left) {
+      logo.hide();
+    }
+    else {
+      logo.show();
+    }
+  })
+
+function exittasks(workerId)
+{   
+  // console.log(user);
+
+    var answer = window.confirm("Are you sure, you want to exit? Once exited, you can never resume work or work on this hit again?");
+    if (answer) {
+
+        window.location.assign("/survey?workerId=" + workerId );
+
+
+
+    }
+    else {
+        //some code
+    }
+    
+    
+}
+
+</script>
+</body>
+</html>

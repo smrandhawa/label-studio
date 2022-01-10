@@ -1,0 +1,15 @@
+<View>
+  <Text name="text" value="$text"/>
+  <View style="box-shadow: 2px 2px 5px #999;
+               padding: 20px; margin-top: 2em;
+               border-radius: 5px;">
+    <Header value="Choose you option"/>
+    <Choices name="sentiment" toName="text"
+             choice="single" showInLine="false">
+      <Choice value="OPTION 1"/>
+      <Choice value="OPTION 3"/>
+      <Choice value="OPTION 2"/>
+    </Choices>
+  </View>
+</View>
+

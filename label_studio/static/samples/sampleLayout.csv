@@ -1,0 +1,2 @@
+data
+"<View><HyperText name="video" value="$video"/><Choices name="type" toName="video" choice="single-radio"><Choice value="Awesome" /><Choice value="Groove" /></Choices></View>"

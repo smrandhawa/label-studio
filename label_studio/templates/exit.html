@@ -1,0 +1,167 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>Thank You</title>
+    <link rel="shortcut icon" href="https://cdn.jotfor.ms/assets/img/favicons/favicon-2021-light.ico">
+    <script type="text/javascript" src="https://cdn.jotfor.ms//js/prototype.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jotfor.ms//css/thankyou.css" />
+    <style type="text/css">
+      body {
+        background:  #ecedf3;
+        font-family: Inter, sans-serif;
+        font-size: 16px;
+        color: #2C3345;
+      }
+      .form-all {
+        background:  #fff;
+        max-width: 752px;
+      }
+      .thankyou-sub-text {
+        color: #2C3345;
+      }
+      #footer {
+        max-width: 752px;
+      }
+
+      .thankYouDownloadPDFWrapper {
+        border-top: 1px solid  #ecedf3;
+      }
+      .ty-buttons.thankYouEditSubmission, .ty-buttons.thankYouDownloadPDF { 
+        color: #2C3345;
+        background-color: #fff;
+        border-color: #2C3345;
+      }
+      .ty-buttons.thankYouFillAgain { 
+        color: #2C3345;
+        background-color: #fff;
+        border-color: #2C3345;
+      }
+      @media print {
+       .form-all {
+        width: 752px;
+       } 
+
+      }
+    </style>
+    <style type="text/css">
+    .form-label.form-label-auto {
+        
+      display: block;
+      float: none;
+      text-align: left;
+      width: 100%;
+    
+      }
+    </style>
+
+    <style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+
+  </head>
+  <body class="thankyou">
+    <div id="stage" class="form-all">
+      <p style="text-align:center;"><img src="https://cdn.jotfor.ms/img/check-icon.png" alt="" width="128" height="128" />
+      </p>
+      <div style="text-align:center;"><h1 style="text-align:center;">Thank You for your work!</h1>
+        <h2 style="text-align:center;">Below is your Amazon Mechanical Turk Redemable Code.</h2>
+        <input type="text" value={{code}} id="myInput" style="
+            background: #fdf0ed;
+            padding: 5px;
+            font-size: 20px;
+            border: 1px solid #e8795d;
+            width: 60%;
+        ">
+
+        <div class="tooltip">
+            <button onclick="myFunction()" onmouseout="outFunc()" style="
+                padding: 6px;
+                background: #fdf0ed;
+                color: #e8795d;
+                border: 1px solid #e8795d;
+                border-radius: 3px;
+                cursor: pointer;
+                transition: all 0.5s;
+                font-size: 20px;
+                flex: 1;
+                margin-left: 10px;
+            ">
+          <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+          Copy Code
+          </button>
+        </div>
+
+      </div>
+      
+    </div>
+
+</div>
+
+    </div>
+
+<script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+  
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copied: " + copyText.value;
+}
+
+function outFunc() {
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copy to clipboard";
+}
+</script>
+
+  </body>
+
+
+
+
+
+
+  
+</html>

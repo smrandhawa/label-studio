@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+{#<script src="static/js/AutointroPolygon.js"></script>#}
+<script src="static/js/lsf-sdk.js"></script>
+
+<!-- Editor -->
+<div class="content">
+    <div id="label-studio">
+    <div class="ui loader active inline centered"></div>
+  </div>
+    <div id="label-studio2" style="visibility: hidden"></div>
+</div>
+<script>
+  window.onload = function () {
+    var task = {{ task_data | json | safe }};
+    var isAdmin = false;
+
+    {% if user.is_admin == True %}
+        isAdmin = true;
+    {% endif %}
+
+    window.LSF_SDK = LSF_SDK("label-studio", `{{ label_config_line | safe }}`, task, false,
+                             null, false, null, "{{ batchid }}", 1, isAdmin,"{{ workerId }}", "{{ hitId }}", "{{ turkSubmitTo }}",
+            "{{ assignmentId }}", "{{ gameid }}");
+
+    {#var task = {{ task_data | json | safe }};#}
+    {#window.LSF_SDK2 = LSF_SDK("label-studio2", `{{ label_config_line | safe }}`, task, false,#}
+    {#                         null, false, null, "{{ batchid }}", 2);#}
+  }
+</script>
+
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"  ></script>
+{#    <script src="https://shepherdjs.dev/dist/js/shepherd.min.js"></script>#}
+{#        <script type="application/javascript" src="https://raw.githubusercontent.com/pjmazenot/steps.js/master/src/StepsJs.js"  ></script>#}
+
+{#<script>#}
+
+{#            ///// Template for INTRO JS NEW ELEMENT#}
+
+{#/*#}
+{#    setTimeout(function() {#}
+{#        introJs().setOptions({showBullets: false,showStepNumbers: false,overlayOpacity: 0.1,disableInteraction: true,steps:[#}
+{#        {title: 'Highlight Text!', element: tags[0], intro: 'Select Text with mouse!', position: 'top'}] }).#}
+{#        onexit(function() {#}
+{#                alert("done");#}
+{#        }).start();#}
+{#        setTimeout(function() {tags[2].click();},(1000));#}
+{#    },(500));#}
+{#*/#}
+{##}
+{#/*#}
+{#    ////////////////////// Shepherd ///////////////////#}
+{#  setTimeout(function() {#}
+{#    w = document.getElementsByClassName("ant-tag");#}
+{#     const tour = new Shepherd.Tour({#}
+{#          defaultStepOptions: {#}
+{#              useModalOverlay: true,#}
+{#              cancelIcon: {#}
+{#                enabled: false#}
+{#              },#}
+{#              exitOnEsc: false,#}
+{#              keyboardNavigation: false,#}
+{#              classes: 'class-1 class-2',#}
+{#              scrollTo: { behavior: 'smooth', block: 'center' },#}
+{#          }#}
+{#        });#}
+{#    tour.useModalOverlay = true;#}
+{#     tour.addStep({#}
+{#      title: '1st Step',#}
+{#      text: `In Action`,#}
+{#      canClickTarget: false,#}
+{#      modalOverlayOpeningPadding: 10,#}
+{#      attachTo: {on: 'top', element: w[0]},#}
+{#      buttons: [{text: 'Next',#}
+{#        action() {#}
+{#         tour.addStep({#}
+{#          title: '2nd Step',#}
+{#          text: `In Action`,#}
+{#          canClickTarget: false,#}
+{#          attachTo: {on: 'top', element: w[2]},#}
+{#          buttons: [{text: 'Next',#}
+{#            action() {#}
+{##}
+{#            setTimeout(function(){next.click();},(1000))#}
+{#            return this.next();#}
+{#          }}]});#}
+{#        setTimeout(function(){w[2].click();},(1000))#}
+{#        return this.next();#}
+{#      }}],#}
+{#     });#}
+{#    setTimeout(function(){w[0].click();},(1000))#}
+{#    tour.start();#}
+{##}
+    {#setTimeout(function(){$(".shepherd-modal-overlay-container").addClass("shepherd-modal-is-visible");},(200))#}
+{##}
+{#    },(1*1000));#}
+{#*/#}
+{#/*#}
+{#//// Template for Shepherd new step //////#}
+{#         tour.addStep({#}
+{#          title: '2nd Step',#}
+{#          text: `In Action`,#}
+{#          canClickTarget: false,#}
+{#          attachTo: {on: 'top', element: w[2]},#}
+{#          buttons: [{text: 'Next',#}
+{#            action() {#}
+{##}
+{#            setTimeout(function(){next;},(1000))#}
+{#            return this.next();#}
+{#          }}]});#}
+{#*/#}
+{#</script>#}
+{% endblock %}

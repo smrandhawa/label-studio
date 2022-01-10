@@ -1,0 +1,6 @@
+export FLASK_APP=label_studio/server.py
+
+flask db stamp head
+
+flask db migrate
+flask db upgrade
