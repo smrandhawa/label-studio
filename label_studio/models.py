@@ -132,6 +132,7 @@ class Completion(db.Model):
     )
     accuracy_rank = db.Column(db.Float,default=0)
     source_completion_id = db.Column(db.Integer, default=0)
+    is_updated = db.Column(db.Integer, default=0)
 
 
 class OldCompletion(db.Model):

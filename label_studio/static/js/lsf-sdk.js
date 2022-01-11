@@ -22,6 +22,13 @@ var workerId;
 var TaskdataObj;
 var urlParam;
 var hitId, turkSubmitTo, assignmentId, gameid;
+var loadedDate;
+
+//diable logs below
+
+    // var console = {};
+    // console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
+
 
 const Requests = (function(window) {
   const handleResponse = res => {
@@ -128,7 +135,6 @@ const _loadTask = function(ls, url, completionID, reset) {
                     /**
                      * Add new data from received task
                      */
-                // console.log(response);;
                 response.data = JSON.stringify(response.data);
                 TempTaskData = response;
                 tmpLS = ls;
@@ -161,6 +167,8 @@ const _loadTask = function(ls, url, completionID, reset) {
                 else {
                     c = ls.completionStore.addCompletion({ userGenerate: true });
                 }
+
+                // loadedDate = new Date();
 
                 if (c.id) cs.selectCompletion(c.id);
 
@@ -205,7 +213,9 @@ const _loadTask = function(ls, url, completionID, reset) {
                       }
                       
                 }, (100));
+
                 ls.setFlags({ isLoading: false });
+                loadedDate = new Date();
               // }
             })
         });
@@ -213,6 +223,12 @@ const _loadTask = function(ls, url, completionID, reset) {
         console.error("Failed to load next task ", err);
     }
 };
+
+function HideButtonPanel()
+{
+    $(".Controls_container__LTeAA").hide();
+    $(".Controls_task__2FuYQ").hide();
+}
 
 function MyDOList(ls, task){
     // if(task.dataObj.layout_id == 2) {
@@ -281,38 +297,21 @@ function MyDOList(ls, task){
         $('.ls-update-btn').hide();
         $('.ls-submit-btn').hide();
         $('.ls-skip-btn').hide();
-        // alert("here again");
-        // $(".Controls_container__LTeAA").empty();
         var Skipbtn = $('.ls-skip-btn');
         Skipbtn.html('').append("<span>Show Me more</span>");
-        // $('.ls-skip-btn').hide();
         Skipbtn.on('click', function () {
-            c = ls.completionStore.addCompletion({userGenerate: true});
-            ls.completionStore.selectCompletion(c.id);
-            $(".Controls_container__LTeAA").hide();
-            $(".Controls_task__2FuYQ").hide();
-            // $(".Controls_container__LTeAA").find("*").attr("disabled", true)
-            // $(".Controls_container__LTeAA").children().each(function(index,element){
-            //     if (index != 0) {
-            //         $(element).hide();
-            //     }
-            // });
-
-            //ls.setFlags({ isLoading: true });
-
+          HideButtonPanel();
+          c = ls.completionStore.addCompletion({userGenerate: true});
+          ls.completionStore.selectCompletion(c.id);
         });
         btndiv = $(".Controls_container__LTeAA")[0];
         var btn = $('<button type="button" class="ant-btn ant-btn-primary helpBtn1"><span>Next</span></button>');
         btndiv.append(btn[0]);
         $('.helpBtn1').on('click', function () {
+
+          HideButtonPanel();
           c = ls.completionStore.addCompletion({userGenerate: true});
           ls.completionStore.selectCompletion(c.id);
-
-        $(".Controls_container__LTeAA").children().each(function(index,element){
-            if (index != 0) {
-                $(element).hide();
-            }
-        });
           ls.submitCompletion();
         });
          $('.ls-skip-btn').show();
@@ -412,18 +411,18 @@ function MyDOList(ls, task){
             $('.ls-submit-btn').hide();
             ls.completionStore.selected.setEdit(false);
 
-           var Skipbtn = $('.ls-skip-btn');
-            Skipbtn.on('click', function () {
-                // $(".Controls_container__LTeAA").hide();
-                // $(".Controls_container__LTeAA").find("*").attr("disabled", true);
-                $(".Controls_container__LTeAA").children().each(function(index,element){
-                    if (index != 0) {
-                        $(element).hide();
-                    }
-                });
-            });                                         //green hash #52c41a
+           // var Skipbtn = $('.ls-skip-btn');
+           //  Skipbtn.on('click', function () {
+           //      // $(".Controls_container__LTeAA").hide();
+           //      // $(".Controls_container__LTeAA").find("*").attr("disabled", true);
+           //      $(".Controls_container__LTeAA").children().each(function(index,element){
+           //          if (index != 0) {
+           //              $(element).hide();
+           //          }
+           //      });
+           //  });                                         //green hash #52c41a
             var btn = $('<button type="button" class="ant-btn ant-btn-secondary helpBtn" style="background: #52c41a; background-color: #52c41a; color: white"><span>Edit</span></button>');
-            var submitbutton = $('<button type="button" class="ant-btn ant-btn-primary mysubmitbtn"><span role="img" aria-label="check" class="anticon anticon-check"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="check" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg></span><span>Submit </span></button>');
+            var submitbutton = $('<button type="button" class="ant-btn ant-btn-primary mysubmitbtn"><span role="img" aria-label="check" class="anticon anticon-check"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="check" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg></span><span>Verify </span></button>');
             btndiv.append(submitbutton[0]);
             btndiv.append(btn[0]);
             submitbutton.on('click', function(){
@@ -440,18 +439,19 @@ function MyDOList(ls, task){
                 ls.completionStore.selected.setEdit(true);
                 $(".helpBtn").hide();
                 $('.mysubmitbtn').hide();
-                var updatebtn = $('<button type="button" class="ant-btn ant-btn-primary myupdatebtn"><span role="img" aria-label="check-circle" class="anticon anticon-check-circle"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="check-circle" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0051.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z"></path><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path></svg></span><span>Update </span></button>');
+                var updatebtn = $('<button type="button" class="ant-btn ant-btn-primary mysubmitbtn"><span role="img" aria-label="check" class="anticon anticon-check"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="check" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg></span><span>Submit </span></button>');
                     btndiv.append(updatebtn[0]);
-                    updatebtn.on('click', function (){
-                        // $(".Controls_container__LTeAA").hide();
-                        // $(".Controls_container__LTeAA").find("*").attr("disabled", true)
-                        $(".Controls_container__LTeAA").children().each(function(index,element){
-                            if (index != 0) {
-                                $(element).hide();
-                            }
-                        });
-                         ls.submitCompletion();
-                })
+                    updatebtn.on('click', function(){
+                    if (ls.completionStore.selected.serializeCompletion().length == 0){
+                      if (ls.task.dataObj.layout_id == 2){
+                          alert("Response can not be empty! Check the instructions to add at least one annotation.");   
+                      }
+                      else{
+                          alert("Response can not be empty! Check the instructions and add some response.");
+                      }
+                    }else
+                    {ls.submitCompletion();}
+                  });
             });
             showDemo = Cookies.get("showInro" + task.dataObj.format_type.toString() + task.dataObj.layout_id.toString());
             if (showDemo == undefined) {
@@ -595,7 +595,7 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
 
   const _prepDataCid = function(c, Cid) {
     var completion = {
-      lead_time: (new Date() - c.loadedDate) / 1000,  // task execution time
+      lead_time: (new Date() - loadedDate) / 1000,  // task execution time
       result: c.serializeCompletion()
     };
 
@@ -606,7 +606,7 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
 
   const _prepData = function(c, includeId) {
     var completion = {
-      lead_time: (new Date() - c.loadedDate) / 1000,  // task execution time
+      lead_time: (new Date() - loadedDate) / 1000,  // task execution time
       result: c.serializeCompletion()
     };
 
@@ -676,43 +676,28 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
 
     onSubmitCompletion: function(ls, c) {
       ls.setFlags({ isLoading: true });
-      // $(".Controls_container__LTeAA").hide();
-      //   $(".Controls_container__LTeAA").find("*").attr("disabled", true)
-                $(".Controls_container__LTeAA").children().each(function(index,element){
-                    if (index != 0) {
-                        $(element).hide();
-                    }
-                });
-
-        
-
-        console.log(ls.task.dataObj.format_type);
-        console.log(ls.task.dataObj.completions[0].id);
-        // console.log(ls.task);
-        // console.log(ls.task["completions"][0]);
-        // console.log(ls.task["completions"][0]['id']);
-
-
-        // if (c.serializeCompletion().length == 0 &&  TaskdataObj.format_type == 3){
-        //     $('body').toast({
-        //     class: 'error',
-        //     title: 'Empty Response',
-        //     message: '<pre>' + "Response can not be empty!" + '</pre>',
-        //     displayTime: 3000,
-        //     position: 'bottom center'
-        //   });
-        //     ls.setFlags({ isLoading: false });
-        //     setTimeout(function () {
-        //         MyDOList(tmpLS, tmpLS.task);
-        //     }, (200));
-        //     return false ;
-        // }
 
       let body = '';
 
-
+      let action = '';
       if (ls.task.dataObj.format_type == 6)
       {
+        elem = document.getElementsByClassName("helpBtn")[0];
+
+        if (elem !== undefined)
+        {
+          x = elem.style.display;
+
+          if (x === "none")
+          {
+            action = "&action=1";//action =1 means tasks is updated
+          }
+          else
+          {
+            action = "&action=0";//action =1 means tasks is verified
+          }         
+        }
+
         body = _prepDataCid(c, ls.task.dataObj.completions[0].id);
 
       }
@@ -722,7 +707,7 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
 
       }
 
-      const req = Requests.poster(`${API_URL.MAIN}${API_URL.TASKS}/${ls.task.id}${API_URL.COMPLETIONS}/?${urlParam}`, body );
+      const req = Requests.poster(`${API_URL.MAIN}${API_URL.TASKS}/${ls.task.id}${API_URL.COMPLETIONS}/?${urlParam}${action}`, body );
       
       req.then(function(httpres) {
         httpres.json().then(function(res) {
@@ -753,6 +738,7 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
               console.log("task loaded");
                   // alert("Bilal 4");
           } else {
+            console.log("in submission");
             loadNext(ls, true, 0, batch_id);
           }
         });
@@ -825,12 +811,23 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
                         $(element).hide();
                     }
                 });
+      console.log('skip called');
+      // console.log(ls.completionStore.completions);
+
       var c = ls.completionStore.selected;
-      var completion = _prepData(c, false);
+      let body = '';
+      if (ls.task.dataObj.format_type == 6)
+      {
+        body = _prepDataCid(c, ls.task.dataObj.completions[0].id);
+      }
+      else
+      {
+        body = _prepData(c);
+      }
 
       Requests.poster(
         `${API_URL.MAIN}${API_URL.TASKS}/${ls.task.id}${API_URL.COMPLETIONS}${API_URL.CANCEL}&${urlParam}`,
-        completion
+        body
       ).then(function(response) {
         response.json().then(function (res) {
           if (res && res.id) {
@@ -843,12 +840,14 @@ const LSF_SDK = function(elid, config, task, hide_skip, description, reset, resp
             // refresh task from server
             // loadTask(ls, ls.task.id, res.id);
           // } else {
-            if (ls.task.dataObj.format_type == 1) {
-                // alert("here again format type 1");
-                loadNext(ls,true, 1, batch_id);
-            } else {
-                loadNext(ls, true, 0, batch_id);
-            }
+          loadNext(ls, true, 0, batch_id);
+
+            // if (ls.task.dataObj.format_type == 1) {
+            //     // alert("here again format type 1");
+            //     loadNext(ls,true, 1, batch_id);
+            // } else {
+            //     loadNext(ls, true, 0, batch_id);
+            // }
           // }
         })
       });
