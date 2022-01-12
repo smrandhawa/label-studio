@@ -112754,15 +112754,9 @@
                 n.initRoot(e.config)
             },
             resetState: function() {
-                try {
-                   e.completionStore = Zz.create({
+                e.completionStore = Zz.create({
                     completions: []
                 })
-                }
-                catch(err) {
-                  console.log('error occured');
-                }
-               
             },
             initializeStore: function(t) {
                 var n = t.completions
