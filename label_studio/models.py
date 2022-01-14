@@ -176,20 +176,6 @@ class Layout(db.Model):
     )
 
 
-class UserScore(db.Model):
-    __tablename__ = 'user_score'
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    user_id = db.Column(db.Integer)
-    batch_id = db.Column(db.Integer)
-    score = db.Column(db.Float)
-    showDemo = db.Column(db.Boolean, default=True)
-    current_task_type = db.Column(db.Integer)
-
-
 class TrainingTask(db.Model):
     __tablename__ = 'TrainingTask'
     id = db.Column(
@@ -260,18 +246,25 @@ class StageRobin(db.Model):
     task_array = db.Column(db.String(500),default="")
 
 
-class WorkerExit(db.Model):
-    __tablename__ = 'worker_exit'
+class WorkerBatch(db.Model):
+    __tablename__ = 'worker_batch'
     id = db.Column(
         db.Integer,
         primary_key=True
     )
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     workerId = db.Column(db.String(100), nullable=False)
+    batch_id = db.Column(db.Integer, default=0)
     survey_data = db.Column(
         db.String(2000),
         nullable=False,
         unique=False
     )
+    score = db.Column(db.Float,default=0)
     completion_code = db.Column(db.String(100), nullable=False)
     exit_at = db.Column(db.BigInteger)
+    is_exited = db.Column(db.Integer, default=0)
+    current_task_type = db.Column(db.Integer, default=1)
+    no_of_tasks_intro = db.Column(db.Integer, default=0)
+    no_of_tasks_allowed = db.Column(db.Integer, default=20)
+

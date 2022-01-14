@@ -1,7 +1,7 @@
 from .base import BaseStorage
 import logging
 import os
-from label_studio.models import Task, Completion, OldCompletion, UserScore, TrainingTask, StageRobin
+from label_studio.models import Task, Completion, OldCompletion, TrainingTask, StageRobin
 from label_studio import db
 from label_studio.utils.io import json_load
 from sqlalchemy import func
@@ -199,27 +199,27 @@ class JsonDBStorage(BaseStorage):
 
         if taskType == 4:
             nextTask = db.session.execute(
-                'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and id not in (select task_id from completions where user_id = :userID  and completions.batch_id = :batchid) and batch_id = :batchid and format_type = :taskType order by id LIMIT 1', #random()
+                'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and id not in (select task_id from completions where user_id = :userID  and completions.batch_id = :batchid) and batch_id = :batchid and format_type = :taskType order by random() LIMIT 1', #random()
                 {'userID': userID, 'batchid': batchid, 'taskType': 1}).first()
 
         elif taskType == 5:
             #check first tasks which are not ever done by any users or admin
-            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.batch_id = {0} ) and batch_id = {0} and format_type = {1} order by id LIMIT 1'.format(batchid,1)
+            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.batch_id = {0} ) and batch_id = {0} and format_type = {1} order by random() LIMIT 1'.format(batchid,1)
             nextTask = db.session.execute(query).first()
             print(query)
             if nextTask is None:
                 # check task which is not done by admin but only other users
-                query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by id LIMIT 1'.format(batchid,userID,1)
+                query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
                 nextTask = db.session.execute(query).first()
                 print(query)
                 if nextTask is None:
                     # check task which with admin completions
-                    query = 'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by id LIMIT 1'.format(batchid,userID,1)
+                    query = 'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
                     nextTask = db.session.execute(query).first()
                     print(query)
 
-        elif taskType == 6:
-            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where user_id = {0} and completions.batch_id = {1} ) and id in (select task_id from completions where completions.batch_id = {1} and completions.format_type = 5 and completions.accuracy_rank <= 80) and batch_id = {1} and format_type = 1 order by confidence_score ASC LIMIT 1'.format(userID,batchid)
+        elif taskType == 6:    
+            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where user_id = {0} and batch_id = {1} ) and id in (select task_id from completions where user_id != 0 and batch_id = {1} and format_type = 5) and batch_id = {1} and confidence_score < 80 order by confidence_score ASC LIMIT 1'.format(userID,batchid)
             nextTask = db.session.execute(query).first()
             print(query)
 
@@ -230,13 +230,15 @@ class JsonDBStorage(BaseStorage):
 
         dictTask = dict(dict(nextTask).items())
 
+        completion_data = None
+
         if taskType == 6:
             completion_data = db.session.execute(
-                'select id,task_id,data,completed_at from completions where task_id = :id and format_type = 5 order by accuracy_rank ASC',
+                'select id,task_id,data,completed_at from completions where task_id = :id and user_id != 0 and format_type = 5 order by accuracy_rank ASC',
                 {'id': nextTask.id}).first()
-        else:
+        elif taskType in (1,2,3): 
             completion_data = db.session.execute(
-                'select id,task_id,data,completed_at from completions where task_id = :id',
+                'select id,task_id,data,completed_at from completions where task_id = :id and user_id = 0',
                 {'id': nextTask.id}).first()            
 
         if completion_data is not None:
