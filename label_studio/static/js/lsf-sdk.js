@@ -112,6 +112,12 @@ const _loadTask = function(ls, url, completionID, reset) {
                 return;
             }
 
+            if (loadedTask instanceof Response && loadedTask.status === 210) {
+                window.location.assign("/exit?workerId=" + workerId );
+                // ls.setFlags({ isLoading: false, noTask: true });
+                // return;
+            }
+
             if (loadedTask instanceof Response && loadedTask.status === 403) {
                 ls.setFlags({ isLoading: false, noAccess: true });
                 return;

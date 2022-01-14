@@ -334,6 +334,10 @@ def labeling_page(batchid = '0'):
             db.session.add(worker_batch)
             db.session.commit()
 
+        if worker_batch.is_exited == 1:
+            return redirect(flask.url_for('label_studio.endscreen', workerId=workerId))
+            # return make_response('', 210)
+
         db_layout_id = Task.query.filter_by(batch_id=batch_id).first()
         db_layout_id = db_layout_id.layout_id
         layout = Layout.query.filter_by(id=db_layout_id).first()
@@ -1023,12 +1027,20 @@ def api_generate_next_task(batchid):
     if batch_id is None:
         return make_response('', 404)
 
-    StepType = db.session.query(WorkerBatch.current_task_type).filter(WorkerBatch.user_id == user_id, WorkerBatch.batch_id == batch_id).scalar() # random
+    worker_batch = WorkerBatch.query.filter_by(user_id=user_id, batch_id=batch_id).first()
+    if worker_batch is None:
+        return make_response('', 404)
+
+
+    StepType = worker_batch.current_task_type
+
     task = g.project.next_task(user_id, StepType, batch_id)
+
+    
 
     if task is None:
         # no tasks found
-        return make_response('', 404)
+        return make_response('', 210)
 
     Newtask = {}
     Newtask['data'] = task
@@ -1052,6 +1064,10 @@ def api_generate_next_task(batchid):
     print(numOfCompletions)
     print(numOfskips)
 
+    if numOfCompletions >= worker_batch.no_of_tasks_allowed:
+        # no tasks found
+        return make_response('', 210)
+
     ar = {}
     ar["money"] = "56"
     if StepType > 2:
@@ -1065,7 +1081,7 @@ def api_generate_next_task(batchid):
     task = resolve_task_data_uri(task, project=g.project)
 
     logger.debug('Next task:\n' + str(task.get('id', None)))
-    logger.debug(json.dumps(task, indent=2))
+    logger.debug(json.dumps(task, indent=2)) 
     return make_response(jsonify(task), 200)
 
 
@@ -1721,68 +1737,43 @@ def create_app(label_studio_config=None):
 def create_tables():
     db.create_all()
 
-@blueprint.route('/exit', methods=['GET'])
-@flask_login.login_required
+
+def check_survey_exit(worker_batch):
+    if worker_batch.is_exited == 0:
+        print('here is the problem')
+        return flask.render_template('survey.html', workerId=worker_batch.workerId)
+    else:
+        return flask.render_template('exit.html',code=worker_batch.completion_code)
+
+
+@blueprint.route('/exit', methods=['GET', 'POST'])
 @exception_handler_page
-def exitscreen():
-
-    user = flask_login.current_user
-
-    existing_worker_exit = WorkerBatch.query.filter_by(workerId=user.workerId).first()
-    
-    if existing_worker_exit is None:
+def endscreen():
+    print('here is the problem')
+    workerId = request.args.get('workerId', None) 
+    if workerId is None:
         return redirect(flask.url_for('label_studio.invalid_page'))
-    
-    else:
-        return flask.render_template(
-            'exit.html',
-            code=existing_worker_exit.completion_code
-        )
-
-
-@blueprint.route('/survey', methods=['GET', 'POST'])
-@flask_login.login_required
-@exception_handler_page
-def survey():
-
+    print('here is the problem')
+    worker_batch = WorkerBatch.query.filter_by(workerId=workerId).first()
+    if worker_batch is None:
+        return redirect(flask.url_for('label_studio.invalid_page'))
+    print('here is the problem')
     if flask.request.method == 'GET':
-        user = flask_login.current_user
-        workerId = user.workerId
-        if workerId is None:
-            return redirect(flask.url_for('label_studio.invalid_page'))
-        else:
-            existing_worker_exit = WorkerBatch.query.filter_by(workerId=workerId).first()
-            if existing_worker_exit is None:
-                return flask.render_template('survey.html')
-            else:
-                return redirect(flask.url_for('label_studio.exitscreen'))
+            return check_survey_exit(worker_batch)
     else:
+        try:
+            worker_batch.survey_data = json.dumps(request.form.to_dict(flat=False))
+            worker_batch.exit_at = timestamp_now()
+            worker_batch.is_exited = 1
+        except:
+            print('there is problem in exit worker with end code.')
 
-        user = flask_login.current_user
-        workerId = user.workerId
+        logger.debug('Exit of ' + str(workerId) + ' saved:\n' + json.dumps(str(worker_batch), indent=2))
 
-        if workerId is None:
-            return redirect(flask.url_for('label_studio.invalid_page'))
-        else:
-            existing_worker_exit = WorkerBatch.query.filter_by(workerId=workerId).first()
-            if existing_worker_exit is None:
-                user_id = user.id
-                survey_data = request.form.to_dict(flat=False)
-                exit_at = timestamp_now()
-                completion_code = str(uuid4())
+        db.session.add(worker_batch)
+        db.session.commit()
 
-                try:  
-                    dbWorkerExit = WorkerBatch(user_id=user_id,workerId=workerId,survey_data=json.dumps(survey_data),completion_code=completion_code, exit_at=exit_at)
-
-                except:
-                    print('there is problem in exit worker with end code.')
-
-                logger.debug('Exit of ' + str(workerId) + ' saved:\n' + json.dumps(str(dbWorkerExit), indent=2))
-
-                db.session.add(dbWorkerExit)
-                db.session.commit()
-
-        return redirect(flask.url_for('label_studio.exitscreen'))
+        return flask.render_template('exit.html',code=worker_batch.completion_code)
 
 
 @blueprint.route('/signup', methods=['GET', 'POST'])
