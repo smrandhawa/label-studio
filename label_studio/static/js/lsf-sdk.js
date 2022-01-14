@@ -410,23 +410,27 @@ function MyDOList(ls, task){
         // setTimeout(function () {
 
         // }, (300));
+    } else if (task && (task.dataObj.format_type == 4 )) {
+        var Skipbtn = $('.ls-skip-btn');
+        Skipbtn.on('click', function () {
+          HideButtonPanel();
+        });
+    } else if (task && (task.dataObj.format_type == 5 )) {
+        var Skipbtn = $('.ls-skip-btn');
+        Skipbtn.on('click', function () {
+          HideButtonPanel();
+        });
     } else if (task && (task.dataObj.format_type == 6 )) {
+        var Skipbtn = $('.ls-skip-btn');
+        Skipbtn.on('click', function () {
+          HideButtonPanel();
+        });
         setTimeout(function () {
             btndiv = $(".Controls_container__LTeAA")[0];
-            $('.ls-update-btn').hide()// children().first().next().html('').append ("<span>Submit </span>");
+            $('.ls-update-btn').hide()
             $('.ls-submit-btn').hide();
             ls.completionStore.selected.setEdit(false);
 
-           // var Skipbtn = $('.ls-skip-btn');
-           //  Skipbtn.on('click', function () {
-           //      // $(".Controls_container__LTeAA").hide();
-           //      // $(".Controls_container__LTeAA").find("*").attr("disabled", true);
-           //      $(".Controls_container__LTeAA").children().each(function(index,element){
-           //          if (index != 0) {
-           //              $(element).hide();
-           //          }
-           //      });
-           //  });                                         //green hash #52c41a
             var btn = $('<button type="button" class="ant-btn ant-btn-secondary helpBtn" style="background: #52c41a; background-color: #52c41a; color: white"><span>Edit</span></button>');
             var submitbutton = $('<button type="button" class="ant-btn ant-btn-primary mysubmitbtn"><span role="img" aria-label="check" class="anticon anticon-check"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="check" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path></svg></span><span>Verify </span></button>');
             btndiv.append(submitbutton[0]);
@@ -459,20 +463,15 @@ function MyDOList(ls, task){
                     {ls.submitCompletion();}
                   });
             });
-            showDemo = Cookies.get("showInro" + task.dataObj.format_type.toString() + task.dataObj.layout_id.toString());
-            if (showDemo == undefined) {
-                q = introJs().setOptions({
-                    tooltipClass: 'customTooltip',doneLabel: "Let's Start",exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
-                    steps: [{
-                        title: 'Welcome 👋',
-                        intro: 'Other User has done this task, Does it look okay to you? You can edit if not!'
-                    }]
-                });
-                Cookies.set("showInro" + task.dataObj.format_type.toString() + task.dataObj.layout_id.toString(), true, { expires: 1 });
-                // Cookies.remove("example");
-                q.start();
-            }
-        }, (100));
+            q = introJs().setOptions({
+                tooltipClass: 'customTooltip',doneLabel: "Let's Start",exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
+                steps: [{
+                    title: 'Welcome 👋',
+                    intro: 'Other User has done this task, Does it look okay to you? You can edit if not!'
+                }]
+            });
+            q.start();
+        }, (50));
     }
 
     // var matchingElement = document.querySelector("#label-studio > div > div > div > div.App_common__QaThK.ls-common > div.App_menu__X-A5N.ls-menu > div:nth-child(1) > div.ant-card-body > ul > li:nth-child(1)");

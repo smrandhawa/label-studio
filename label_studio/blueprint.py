@@ -1331,7 +1331,6 @@ def api_tasks_completions(task_id):
         completed_task_type = worker_batch.current_task_type
 
         if was_cancelled:
-            
             if completed_task_type == 6:
                 if 'id' in completion and completion['id'] is not None:
                     source_completion_id = completion['id']
