@@ -493,7 +493,7 @@ function reRenderTask(ls){
             $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
             generateOnlyMouseoverEvent(document.getElementsByClassName("Relations_item__2qMzb")[0]);
         }
-    cs.selected.setupHotKeys();
+        cs.selected.setupHotKeys();
         btndiv = $(".Controls_container__LTeAA")[0];
         $(".helpBtn").children().first().html('').append ("<span>Back to Task </span>");
         // parent = $(".ls-skip-btn").parent();
