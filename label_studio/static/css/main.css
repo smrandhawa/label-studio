@@ -604,3 +604,26 @@ pre {
     white-space: -o-pre-wrap;
     word-wrap:  break-word !important;
 }
+
+
+.front {
+        -webkit-transform: rotateX(0deg) rotateY(0deg);
+        -webkit-transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        -moz-transform: rotateX(0deg) rotateY(0deg);
+        -moz-transform-style: preserve-3d;
+        -moz-backface-visibility: hidden;
+        -o-transition: all .4s ease-in-out;
+        -ms-transition: all .4s ease-in-out;
+        -moz-transition: all .4s ease-in-out;
+        -webkit-transition: all .4s ease-in-out;
+        transition: all .4s ease-in-out;
+}
+
+.flip {
+        -webkit-transform: rotateY(360deg);
+        -moz-transform: rotateY(360deg);
+}
+
+
+

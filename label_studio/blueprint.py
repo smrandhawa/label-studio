@@ -1460,6 +1460,8 @@ def switch_from_stage_5(worker_batch):
                 worker_batch.current_task_type = 6
             else:
                 worker_batch = prob_4_5(worker_batch)
+        else:
+            worker_batch = prob_4_5(worker_batch)
     return worker_batch
 
 def switch_from_stage_4(worker_batch, num_completions):

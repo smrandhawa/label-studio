@@ -399,6 +399,9 @@ function MyDOList(ls, task){
         if ($(".helpBtn")[0] != undefined) {
             $(".helpBtn")[0].remove();
         }
+
+        $('.Segment_block__1fyeG ').addClass('front');
+
         var btn = $('<button type="button" class="ant-btn ant-btn-ghost helpBtn" style="background: #52c41a; background-color: #52c41a; color: white"><span>See Answer</span></button>');
         // btn[0].appendTo(btndiv);
         btndiv.appendChild(btn[0]);
@@ -487,64 +490,46 @@ function reRenderTask(ls){
     let cs = ls.completionStore;
     let c;
     if (ls.completionStore.selected.id === cs.completions[0].id){
-        c = {id: cs.completions[1].id, editable: false};
-        cs.selectCompletion(c.id);
-        if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
-            $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
-            generateOnlyMouseoverEvent(document.getElementsByClassName("Relations_item__2qMzb")[0]);
-        }
-        cs.selected.setupHotKeys();
-        btndiv = $(".Controls_container__LTeAA")[0];
-        $(".helpBtn").children().first().html('').append ("<span>Back to Task </span>");
-        // parent = $(".ls-skip-btn").parent();
-        // parent.children().eq(0).before(parent.children().last());
-        // parent.children().eq(0).before(parent.children().last());
-        // $('.ls-skip-btn').hide();
-        // $('.ls-update-btn').hide();
-        $('.ls-skip-btn').hide();
-        $('.ls-update-btn').hide();
-        $('.ls-submit-btn').hide();
+        $('.Segment_block__1fyeG ').addClass('flip');
 
-        $('.mysubmitbtn').hide();
-        ls.completionStore.selected.setEdit(false);
+        setTimeout(function () {
+          c = {id: cs.completions[1].id, editable: false};
+          cs.selectCompletion(c.id);
+          if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
+              $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
+              generateOnlyMouseoverEvent(document.getElementsByClassName("Relations_item__2qMzb")[0]);
+          }
+          cs.selected.setupHotKeys();
+          btndiv = $(".Controls_container__LTeAA")[0];
+          $(".helpBtn").children().first().html('').append ("<span>Back to Task </span>");
+          $('.ls-skip-btn').hide();
+          $('.ls-update-btn').hide();
+          $('.ls-submit-btn').hide();
+          $('.mysubmitbtn').hide();
+          ls.completionStore.selected.setEdit(false);
+        }, (200));
+
+
     } else {
-        c = {id: cs.completions[0].id, editable: false};
-        cs.selectCompletion(c.id);
-        if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
-            $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
-        }
-        cs.selected.setupHotKeys();
-        $(".helpBtn").children().first().html('').append ("<span>See Answer </span>");
-        // parent = $(".helpBtn").parent();
-        // var evt = document.createEvent("MouseEvents");
-        // evt.initEvent("click", true, false);
-        // $("body")[0].dispatchEvent(evt);
+        $('.Segment_block__1fyeG ').removeClass('flip');
 
-        // parent.children().eq(0).before(parent.children().last());
-        // parent.children().eq(0).before(parent.children().last());
-        // parent.children().eq(0).before(parent.children().last());
-        // parent.children().eq(0).before(parent.children().last());
-
-        // $('.ls-skip-btn').show();
-        // $('.ls-update-btn').show();
-        $('.ls-skip-btn').hide();
-        $('.ls-update-btn').hide();
-        $('.ls-submit-btn').hide();
-        $('.mysubmitbtn').show();
+        setTimeout(function () {
+          c = {id: cs.completions[0].id, editable: false};
+          cs.selectCompletion(c.id);
+          if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
+              $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
+          }
+          cs.selected.setupHotKeys();
+          $(".helpBtn").children().first().html('').append ("<span>See Answer </span>");
+          $('.ls-skip-btn').hide();
+          $('.ls-update-btn').hide();
+          $('.ls-submit-btn').hide();
+          $('.mysubmitbtn').show();
+          ls.completionStore.selected.setEdit(true);
+        }, (200));
 
 
-        ls.completionStore.selected.setEdit(true);
     }
-
-
-    // var Skipbtn = $('.ls-skip-btn').children().first();
-    // Skipbtn.html('').append ("<span>Next </span>");
-    // Skipbtn.on('click', function(){
-    //     c = ls.completionStore.addCompletion({ userGenerate: true });
-    //     cs.selectCompletion(c.id);
-    //     // ls.onSkipTask(ls);
-    // });
-
 }
 
 const loadNext = function(ls, reset, trainingTask, batchid) {
