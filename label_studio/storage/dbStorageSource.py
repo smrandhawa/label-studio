@@ -44,10 +44,10 @@ def checkAndgetTrainginTask(userID, batchid):
     return nextTask
 
 
-def savestage(id, userID, currentRobinIndex, taskArray):
+def savestage(id, userID, currentRobinIndex, taskArray, batchid):
     try:
         if id == -1:
-            dbrobinstage = StageRobin(user_id= userID, current_robin_index=currentRobinIndex, task_array=taskArray)
+            dbrobinstage = StageRobin(user_id= userID, current_robin_index=currentRobinIndex, task_array=taskArray, batch_id=batchid)
             db.session.add(dbrobinstage)
             db.session.commit()
         else:
@@ -158,70 +158,74 @@ class JsonDBStorage(BaseStorage):
         # return self.data.items()
 
     # def nextTask(self, userID, traingTask, batchid):
-    def nextTask(self, userID, taskType, batchid):
+    def nextTask(self, userID, taskType, batchid, last_task_id):
         # db.session.query()
         print('next taks is called')
         nextTask = None
 
-        if taskType in (1,2,3):
-            nexttaskid = None
-            try:
-                robinstage = StageRobin.query.filter_by(user_id=userID).first()
-                if robinstage == None:
-                    randrobin = StageRobin.query.first()
-                    if randrobin == None:
-                        tasklist = db.session.execute(
-                        'SELECT id FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and batch_id = :batchid and format_type = :taskType order by RANDOM() LIMIT 5', #random()
-                        {'batchid': batchid, 'taskType': 1}).all()
-                        taskArray = '-'.join([str(tid[0]) for tid in tasklist])
+        if last_task_id != 0:
+            nextTask = db.session.execute('SELECT * FROM task WHERE id = :lasttaskid', 
+            {'lasttaskid': last_task_id}).first()
+        else:
+            if taskType in (1,2,3):
+                nexttaskid = None
+                try:
+                    robinstage = StageRobin.query.filter_by(user_id=userID, batch_id=batchid).first()
+                    if robinstage == None:
+                        randrobin = StageRobin.query.filter_by(batch_id=batchid).first()
+                        if randrobin == None:
+                            tasklist = db.session.execute(
+                            'SELECT id FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and batch_id = :batchid and format_type = :taskType order by RANDOM() LIMIT 5', #random()
+                            {'batchid': batchid, 'taskType': 1}).all()
+                            taskArray = '-'.join([str(tid[0]) for tid in tasklist])
+                        else:
+                            taskArray = randrobin.task_array
+                        nexttaskid = taskArray.split('-')[0]
+                        savestage(-1, userID, 1, taskArray, batchid)
                     else:
-                        taskArray = randrobin.task_array
-                    nexttaskid = taskArray.split('-')[0]
-                    savestage(-1, userID, 1, taskArray)
-                else:
-                    currentRobinIndex = robinstage.current_robin_index
-                    taskArray = robinstage.task_array
-                    id = robinstage.id
-                    nexttaskid = taskArray.split('-')[currentRobinIndex]
-                    currentRobinIndex = currentRobinIndex + 1
-                    currentRobinIndex = currentRobinIndex % 5
-                    savestage(id, userID, currentRobinIndex, taskArray)
+                        currentRobinIndex = robinstage.current_robin_index
+                        taskArray = robinstage.task_array
+                        id = robinstage.id
+                        nexttaskid = taskArray.split('-')[currentRobinIndex]
+                        currentRobinIndex = currentRobinIndex + 1
+                        currentRobinIndex = currentRobinIndex % 5
+                        savestage(id, userID, currentRobinIndex, taskArray, batchid)
 
-                if nexttaskid is not None:
-                    nextTask = db.session.execute(
-                    'SELECT * FROM task WHERE id = :nexttaskid', 
-                    {'nexttaskid': nexttaskid}).first()
+                    if nexttaskid is not None:
+                        nextTask = db.session.execute(
+                        'SELECT * FROM task WHERE id = :nexttaskid', 
+                        {'nexttaskid': nexttaskid}).first()
 
-            except Exception as e:
-                print('Problem occured in getting task for first two stages. Here is the exception.')
-                print(e)
+                except Exception as e:
+                    print('Problem occured in getting task for first two stages. Here is the exception.')
+                    print(e)
 
 
-        if taskType == 4:
-            nextTask = db.session.execute(
-                'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and id not in (select task_id from completions where user_id = :userID  and completions.batch_id = :batchid) and batch_id = :batchid and format_type = :taskType order by random() LIMIT 1', #random()
-                {'userID': userID, 'batchid': batchid, 'taskType': 1}).first()
+            if taskType == 4:
+                nextTask = db.session.execute(
+                    'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = :batchid ) and id not in (select task_id from completions where user_id = :userID  and completions.batch_id = :batchid) and batch_id = :batchid and format_type = :taskType order by random() LIMIT 1', #random()
+                    {'userID': userID, 'batchid': batchid, 'taskType': 1}).first()
 
-        elif taskType == 5:
-            #check first tasks which are not ever done by any users or admin
-            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.batch_id = {0} ) and batch_id = {0} and format_type = {1} order by random() LIMIT 1'.format(batchid,1)
-            nextTask = db.session.execute(query).first()
-            print(query)
-            if nextTask is None:
-                # check task which is not done by admin but only other users
-                query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
+            elif taskType == 5:
+                #check first tasks which are not ever done by any users or admin
+                query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.batch_id = {0} ) and batch_id = {0} and format_type = {1} order by random() LIMIT 1'.format(batchid,1)
                 nextTask = db.session.execute(query).first()
                 print(query)
                 if nextTask is None:
-                    # check task which with admin completions
-                    query = 'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
+                    # check task which is not done by admin but only other users
+                    query = 'SELECT * FROM task WHERE id not in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
                     nextTask = db.session.execute(query).first()
                     print(query)
+                    if nextTask is None:
+                        # check task which with admin completions
+                        query = 'SELECT * FROM task WHERE id in (select task_id from completions where completions.user_id = 0 and completions.batch_id = {0} ) and id not in (select task_id from completions where user_id = {1}  and completions.batch_id = {0}) and batch_id = {0} and format_type = {2} order by random() LIMIT 1'.format(batchid,userID,1)
+                        nextTask = db.session.execute(query).first()
+                        print(query)
 
-        elif taskType == 6:    
-            query = 'SELECT * FROM task WHERE id not in (select task_id from completions where user_id = {0} and batch_id = {1} ) and id in (select task_id from completions where user_id != 0 and batch_id = {1} and format_type = 5) and batch_id = {1} and confidence_score < 80 order by confidence_score ASC LIMIT 1'.format(userID,batchid)
-            nextTask = db.session.execute(query).first()
-            print(query)
+            elif taskType == 6:    
+                query = 'SELECT * FROM task WHERE id not in (select task_id from completions where user_id = {0} and batch_id = {1} ) and id in (select task_id from completions where user_id != 0 and batch_id = {1} and format_type = 5) and batch_id = {1} and confidence_score < 80 order by confidence_score ASC LIMIT 1'.format(userID,batchid)
+                nextTask = db.session.execute(query).first()
+                print(query)
 
         # TODO : Check if completion is empty the re elect task
 

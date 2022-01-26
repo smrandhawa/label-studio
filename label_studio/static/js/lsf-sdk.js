@@ -181,6 +181,10 @@ const _loadTask = function(ls, url, completionID, reset) {
                 // fix for broken old references in mst
                 cs.selected.setupHotKeys();
                 // ls.onTaskLoad(ls, ls.task);
+
+                $(".Controls_container__LTeAA").hide();
+                $(".Controls_task__2FuYQ").hide();
+
                 setTimeout(function () {
                       MyDOList(ls, ls.task);
                       if (response.format_type >= 3 && response.format_type < 6){
@@ -329,7 +333,7 @@ function MyDOList(ls, task){
                 let cookies_set = document.cookie;
                 cookie_find_str = "exampleshown";
                 if (workerId != "None") {
-                  cookie_find_str = workerId +"exampleshown";
+                  cookie_find_str = "showInro" + task.dataObj.format_type.toString() + task.dataObj.layout_id.toString() + "=" + workerId + "exampleshown";
                 }
                 
                 if (!cookies_set.includes(cookie_find_str)) {
@@ -348,6 +352,7 @@ function MyDOList(ls, task){
                     var expires = "; expires="+ date.toGMTString();
                     if (workerId != "None") {
                       cookie_str = "showInro" + task.dataObj.format_type.toString() + task.dataObj.layout_id.toString() +"="+workerId +"exampleshown"+expires+"; path=/";
+                      // alert(cookie_str);
                     }
                     else
                     {
@@ -358,6 +363,7 @@ function MyDOList(ls, task){
             }
         }, (50));
     } else if (task && task.dataObj.format_type == 2) {
+
         setTimeout(function () {
             tmpLS = ls;
             if (task.dataObj.layout_id == 8) {
@@ -380,9 +386,11 @@ function MyDOList(ls, task){
                 //$.getScript('static/js/AutointroRectangle.js');
                 console.log('startIntroRectangleTask:', task);
                 startIntroRectangle(task.dataObj.completions[0].result, tmpLS);
-            } else if(task.dataObj.layout_id == 9 || task.dataObj.layout_id == 12) {
-                // $.getScript('static/js/AutointroImageClassification.js');
+            } else if(task.dataObj.layout_id == 9) {
                 startIntroImgCls(task.dataObj.completions[0].result, tmpLS);
+            } else if (task.dataObj.layout_id == 12) {
+
+              startIntroTextCls(task.dataObj.completions[0].result, tmpLS);
             }
         // setTimeout(function () {
         //     tmpLS = ls;
@@ -414,11 +422,15 @@ function MyDOList(ls, task){
 
         // }, (300));
     } else if (task && (task.dataObj.format_type == 4 )) {
+        $(".Controls_container__LTeAA").show();
+        $(".Controls_task__2FuYQ").show();
         var Skipbtn = $('.ls-skip-btn');
         Skipbtn.on('click', function () {
           HideButtonPanel();
         });
     } else if (task && (task.dataObj.format_type == 5 )) {
+        $(".Controls_container__LTeAA").show();
+        $(".Controls_task__2FuYQ").show();
         var Skipbtn = $('.ls-skip-btn');
         Skipbtn.on('click', function () {
           HideButtonPanel();
@@ -466,6 +478,10 @@ function MyDOList(ls, task){
                     {ls.submitCompletion();}
                   });
             });
+
+            $(".Controls_container__LTeAA").show();
+            $(".Controls_task__2FuYQ").show();
+
             q = introJs().setOptions({
                 tooltipClass: 'customTooltip',doneLabel: "Let's Start",exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
                 steps: [{

@@ -3,11 +3,13 @@ var result;
 var didComplete;
 var idtoLabelMap= {};
 var ls;
+
 function startIntroRE(_result, _ls) {
     $(".ant-spin-container").children().first().next().hide();
     result = _result;
     steps = 0;
     ls = _ls;
+    handleButtons(ls);
     q = introJs().setOptions({
         tooltipClass: 'customTooltip',doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
         steps: [{
@@ -94,7 +96,7 @@ function nextStepForTag(result, stepNumber) {
                                 if (didComplete) {
                                     didComplete = false;
                                 } else {
-                                    exitcallNE(ls);
+                                    exitCall(ls);
                                 }
                             }).onafterchange(function (el) {
                                 afterChangeCall(q);
@@ -107,7 +109,7 @@ function nextStepForTag(result, stepNumber) {
                     if (didComplete) {
                         didComplete = false;
                     } else {
-                        exitcallNE(ls);
+                        exitCall(ls);
                     }
                 }).onafterchange(function (el) {
                     afterChangeCall(q);
@@ -403,7 +405,7 @@ function FinishStep(stepNumber, ls){
         }
      }
     else {
-        exitcallNE(ls);
+        exitCall(ls);
     }
 }
 
@@ -462,61 +464,25 @@ function resumeCall(){
     $(".introjs-nextbutton").attr("disabled", false);
 }
 
-function exitcallNE(ls)
-{
-    let cs = ls.completionStore;
-    let c = {id: ls.completionStore.completions[1].id, editable: false};
-    if (c.id) cs.selectCompletion(c.id);
-
-    $('.ls-update-btn').hide();
-    if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
-        $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
-        // $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).find("*").off("click");
-        generateOnlyMouseoverEvent(document.getElementsByClassName("Relations_item__2qMzb")[0]);
-    }
-}
-
 
 function exitCall(ls){
     let cs = ls.completionStore;
     let c = {id: ls.completionStore.completions[1].id, editable: false};
     if (c.id) cs.selectCompletion(c.id);
-
+    ls.completionStore.selected.setEdit(false);
+    $('.ls-update-btn').hide();
     if (TaskdataObj.layout_id == 2 && TaskdataObj.batch_id == 5) {
         $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).children().hide();
         // $($("span:contains('" + result[0].value.labels[0] + "')")[0].parentElement).find("*").off("click");
         generateOnlyMouseoverEvent(document.getElementsByClassName("Relations_item__2qMzb")[0]);
     }
-
-    var Skipbtn = $('.ls-skip-btn').children().first();
-    Skipbtn.html('').append("<span>Show me more</span>");
-    $('.ls-update-btn').hide();
-    $('.ls-submit-btn').hide();
-    Skipbtn.on('click', function () {
-        c = ls.completionStore.addCompletion({userGenerate: true});
-        cs.selectCompletion(c.id);
-        // $($(".Controls_container__LTeAA").children).remove();
-        $(".Controls_container__LTeAA").find("*").attr("disabled", true)
-    });
-
-    btndiv = $(".Controls_container__LTeAA")[0];
-    var btn = $('<button type="button" class="ant-btn ant-btn-primary helpBtn1"><span>Next</span></button>');
-    btndiv.append(btn[0]);
-    $('.helpBtn1').on('click', function () {
-      c = ls.completionStore.addCompletion({userGenerate: true});
-      ls.completionStore.selectCompletion(c.id);
-      ls.submitCompletion();
-      // $(".Controls_container__LTeAA").hide();
-        $(".Controls_container__LTeAA").find("*").attr("disabled", true)
-    });
-
 }
 
 function handleButtons(ls){
     let cs = ls.completionStore;
     let c = {id: ls.completionStore.completions[1].id, editable: false};
     // if (c.id) cs.selectCompletion(c.id);
-    $(".Controls_container__LTeAA").hide();
+    
     var Skipbtn = $('.ls-skip-btn').children().first();
     Skipbtn.html('').append("<span>Show me more</span>");
     $('.ls-update-btn').hide();
@@ -541,6 +507,7 @@ function handleButtons(ls){
       // $(".Controls_container__LTeAA").hide();
         $(".Controls_container__LTeAA").find("*").attr("disabled", true)
     });
+
     $(".Controls_container__LTeAA").show();
 
 }
@@ -580,6 +547,7 @@ function startIntroPolygon(_result, _ls) {
     result = _result;
     steps = 0;
     ls = _ls;
+    handleButtons(ls);
     q = introJs().setOptions({
         tooltipClass: 'customTooltip',doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
         steps: [{
@@ -718,7 +686,67 @@ function startIntroNE(_result, _ls) {
         if (didComplete) {
             didComplete = false;
         }else {
-            exitcallNE(ls);
+            exitCall(ls);
+        }
+    }).onafterchange(function (el){
+        afterChangeCall(q);
+    });
+    q.start();
+}
+
+function startIntroTextCls(_result, _ls) {
+    $(".ant-spin-container").children().first().next().hide();
+    result = _result;
+    steps = 0;
+    ls = _ls;
+    handleButtons(ls);
+    q = introJs().setOptions({
+        tooltipClass: 'customTooltip',doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
+        steps: [{
+                title: 'Welcome',
+                intro: 'Label Studio 👋 <br> Here you will see how to do Text Sentiment Analysis'
+            }]
+    });
+    q.oncomplete(function () {
+        didComplete = true;
+
+        setTimeout(function () {
+            introJs().setOptions({
+                doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
+                steps: [{
+                    title: 'Classification',
+                    element: $(".ant-form")[0],
+                    intro: 'Select label',
+                    position: 'top'
+                }]
+            }).oncomplete(function () {
+                didComplete = true;
+            }).onexit(function () {
+                exitCall(ls);
+            }).onafterchange(function (el) {
+                afterChangeCall(q);
+            }).start();
+            setTimeout(function () {
+                waitCall();
+                stepNumber = 0;
+                myTime = setInterval(function () {
+                    if (stepNumber == result[0].value.choices.length ){
+                        clearTimeout(myTime);
+                        resumeCall();
+                    } else {
+                        $("span:contains('" + result[0].value.choices[stepNumber] + "')").parent()[0].click()
+                        stepNumber++;
+                    }
+                }, (500));
+                //                $("span:contains('" + result[0].value.choices[0] + "')").parent()[0].click();
+            }, (1000));
+        }, (600));
+
+    }).onexit(function (targetElement) {
+        if (didComplete) {
+            didComplete = false;
+        }else {
+            exitCall(ls);
         }
     }).onafterchange(function (el){
         afterChangeCall(q);
@@ -732,7 +760,7 @@ function startIntroImgCls(_result, _ls) {
     result = _result;
     steps = 0;
     ls = _ls;
-
+    handleButtons(ls);
     q = introJs().setOptions({
         tooltipClass: 'customTooltip',doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
         steps: [{
@@ -794,6 +822,7 @@ function startIntroRectangle(_result, _ls) {
     result = _result;
     steps = 0;
     ls = _ls;
+    handleButtons(ls);
     q = introJs().setOptions({
         tooltipClass: 'customTooltip',doneLabel: "Next",scrollToElement: true, exitOnOverlayClick: false,exitOnEsc: false,showBullets: false,showStepNumbers: false,overlayOpacity: 0.5,disableInteraction: true,
         steps: [{

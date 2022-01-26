@@ -1023,9 +1023,11 @@ def api_generate_next_task(batchid):
 
     user_id = user.id
 
-    batch_id = db.session.query(BatchData.id).filter(BatchData.hexID == batchid).scalar()
-    if batch_id is None:
+    batch_data = BatchData.query.filter_by(hexID=batchid).first()
+    if batch_data is None:
         return make_response('', 404)
+
+    batch_id = batch_data.id
 
     worker_batch = WorkerBatch.query.filter_by(user_id=user_id, batch_id=batch_id).first()
     if worker_batch is None:
@@ -1033,10 +1035,14 @@ def api_generate_next_task(batchid):
 
 
     StepType = worker_batch.current_task_type
+    mask = batch_data.mask
+    if StepType == 1:
+        if len(mask) > 0:
+            if str(StepType) not in mask:
+                StepType = int(mask[0])
+                worker_batch.current_task_type = StepType
 
-    task = g.project.next_task(user_id, StepType, batch_id)
-
-    
+    task = g.project.next_task(user_id, StepType, batch_id, worker_batch.last_task_id)
 
     if task is None:
         # no tasks found
@@ -1053,6 +1059,10 @@ def api_generate_next_task(batchid):
     task["format_type"] = StepType #Newtask['data']['format_type']
     if 'completions' in Newtask['data']:
         task["completions"] = Newtask['data']['completions']
+
+    worker_batch.last_task_id = task['id']
+    db.session.add(worker_batch)
+    db.session.commit()
 
     print('calculating skipps and completions')
     ar = {}
@@ -1329,18 +1339,31 @@ def api_tasks_completions(task_id):
         source_completion_id = 0
         is_updated = 0
         completed_task_type = worker_batch.current_task_type
+        worker_batch.last_task_id = 0
 
         if was_cancelled:
             if completed_task_type == 6:
                 if 'id' in completion and completion['id'] is not None:
                     source_completion_id = completion['id']
                 worker_batch = prob_4_5(worker_batch)
-                db.session.add(worker_batch)
-                db.session.commit()
+            db.session.add(worker_batch)
+            db.session.commit()
 
         if not was_cancelled:
             if completed_task_type in (1,2,3):
-                worker_batch.current_task_type = completed_task_type + 1
+                batch_data = BatchData.query.filter_by(id=batch_id).first()
+                if batch_data is None:
+                    return make_response('', 404)
+                    
+                try:
+                    mask = batch_data.mask
+                    new_task_type = mask[mask.index(str(completed_task_type)) +1]
+                    worker_batch.current_task_type = int(new_task_type)
+                except Exception as e:
+                    print(e)
+                    print('some error occured')
+                    pass
+
             elif completed_task_type == 4:
                 originalCompletion = Completion.query.filter_by(user_id=0, task_id=task_id).first()
                 completion_accuracy_rank = evaluateCompletionStage4(completion, originalCompletion, batch_id)

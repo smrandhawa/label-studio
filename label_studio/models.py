@@ -233,6 +233,7 @@ class BatchData(db.Model):
     number_of_completions = db.Column(db.Integer,default=1)
     number_of_completions_advance = db.Column(db.Integer,default=10)
     accuracy = db.Column(db.Float,default=0)
+    mask = db.Column(db.String(50),default="")
 
 
 class StageRobin(db.Model):
@@ -244,6 +245,7 @@ class StageRobin(db.Model):
     user_id = db.Column(db.Integer)
     current_robin_index = db.Column(db.Integer,default=0)
     task_array = db.Column(db.String(500),default="")
+    batch_id = db.Column(db.Integer, default=0)
 
 
 class WorkerBatch(db.Model):
@@ -260,11 +262,12 @@ class WorkerBatch(db.Model):
         nullable=False,
         unique=False
     )
+    last_task_id = db.Column(db.Integer, default=0)
     score = db.Column(db.Float,default=0)
     completion_code = db.Column(db.String(100), nullable=False)
     exit_at = db.Column(db.BigInteger)
     is_exited = db.Column(db.Integer, default=0)
     current_task_type = db.Column(db.Integer, default=1)
     no_of_tasks_intro = db.Column(db.Integer, default=0)
-    no_of_tasks_allowed = db.Column(db.Integer, default=20)
+    no_of_tasks_allowed = db.Column(db.Integer, default=30)
 
