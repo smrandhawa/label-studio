@@ -366,6 +366,45 @@ def labeling_page(batchid = '0'):
     return resp
 
 
+@blueprint.route('/download')
+@exception_handler_page
+def post():
+
+
+    workerId = request.args.get('workerId', None)
+    secret = request.args.get('secret', None)
+    # Check if user is coming from MTURK or a signed up User
+    if (workerId is None) or (secret is None):
+        return redirect(flask.url_for('label_studio.invalid_page'))
+    
+    if secret !='2INGh7Bokz':
+        return redirect(flask.url_for('label_studio.invalid_page'))
+
+    existing_user = User.query.filter_by(workerId=workerId).first()
+    if existing_user is None:
+        return redirect(flask.url_for('label_studio.invalid_page'))
+    else:
+        if existing_user.is_admin == 0:
+            return redirect(flask.url_for('label_studio.invalid_page'))
+
+    data = {}
+    for table in ('user',  'completions', 'layout', 'task', 'BatchData', 'worker_batch','stage_robin'):
+        query = "select * from {0}".format(table)
+        data_table = db.session.execute(query)
+        data_table = data_table.fetchall()
+        tmp_data = []
+        for row in data_table:
+            tmp_data.append(list(row))
+        tmp_data = json.dumps(tmp_data)
+        data[table] = tmp_data
+
+    output = make_response(data,201)
+    output.headers["Content-Disposition"] = "attachment; filename=json_db_image.json"
+    output.headers["Content-type"] = "application/json"
+    return output
+
+
+
 @blueprint.route('/welcome')
 @flask_login.login_required
 @exception_handler_page
@@ -1857,28 +1896,29 @@ def unauthorized():
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    Log-in page for registered users.
+    return redirect(flask.url_for('label_studio.invalid_page'))
+    # """
+    # Log-in page for registered users.
 
-    GET requests serve Log-in page.
-    POST requests validate and redirect user to dashboard.
-    """
-    # Bypass if user is logged in
-    if flask.request.method == 'GET':
-        if flask_login.current_user.is_authenticated:
-            return redirect(flask.url_for('label_studio.labeling_page'))
-        else:
-            return flask.render_template('LoginForm.html')
-    else:
-    # if flask.request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password=password):
-            flask_login.login_user(user)
-            return redirect(flask.url_for('label_studio.labeling_page'))
-        # flash('Invalid username/password combination')
-    return redirect(flask.url_for('label_studio.login'))
+    # GET requests serve Log-in page.
+    # POST requests validate and redirect user to dashboard.
+    # """
+    # # Bypass if user is logged in
+    # if flask.request.method == 'GET':
+    #     if flask_login.current_user.is_authenticated:
+    #         return redirect(flask.url_for('label_studio.labeling_page'))
+    #     else:
+    #         return flask.render_template('LoginForm.html')
+    # else:
+    # # if flask.request.method == 'POST':
+    #     username = request.form['username']
+    #     password = request.form['password']
+    #     user = User.query.filter_by(username=username).first()
+    #     if user and user.check_password(password=password):
+    #         flask_login.login_user(user)
+    #         return redirect(flask.url_for('label_studio.labeling_page'))
+    #     # flash('Invalid username/password combination')
+    # return redirect(flask.url_for('label_studio.login'))
 
 
 

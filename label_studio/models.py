@@ -78,14 +78,6 @@ class Task(db.Model):
         unique=False
     )
 
-    # todo add batch id
-    #
-    # layout = db.Column(
-    #     db.String(2000),
-    #     nullable=False,
-    #     unique=False
-    # )
-
     layout_id = db.Column(db.Integer, db.ForeignKey('layout.id'),
                           nullable=False)
     groundTruth = db.Column(
@@ -135,33 +127,6 @@ class Completion(db.Model):
     is_updated = db.Column(db.Integer, default=0)
 
 
-class OldCompletion(db.Model):
-    __tablename__ = 'Oldcompletions'
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
-    data = db.Column(
-        db.String(2000),
-        nullable=False,
-        unique=False
-    )
-
-    # hexID =db.Column(
-    #     db.String(2000),
-    #     default="",
-    #     nullable=False,
-    #     unique=False
-    # )
-    completed_at = db.Column(
-        db.BigInteger
-        # default="",
-        # nullable=False,
-        # unique=False
-    )
-
 class Layout(db.Model):
     __tablename__ = 'layout'
     id = db.Column(
@@ -175,39 +140,6 @@ class Layout(db.Model):
         unique=False
     )
 
-
-class TrainingTask(db.Model):
-    __tablename__ = 'TrainingTask'
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    text = db.Column(
-        db.String(2000),
-        nullable=False,
-        unique=False
-    )
-
-    data = db.Column(
-        db.String(2000),
-        nullable=False,
-        unique=False
-    )
-
-    layout_id = db.Column(db.Integer, db.ForeignKey('layout.id'),
-                          nullable=False)
-    groundTruth = db.Column(
-        db.String(2000),
-        nullable=False,
-        unique=False
-    )
-
-    format_type = db.Column(db.Integer, default=0)
-    batch_id = db.Column(db.Integer, default=0)
-    description = db.Column(
-        db.String(2000)
-    )
 
 class BatchData(db.Model):
     __tablename__ = 'BatchData'

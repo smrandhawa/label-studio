@@ -1,7 +1,7 @@
 from .base import BaseStorage
 import logging
 import os
-from label_studio.models import Task, Completion, OldCompletion, TrainingTask, StageRobin
+from label_studio.models import Task, Completion, StageRobin
 from label_studio import db
 from label_studio.utils.io import json_load
 from sqlalchemy import func
@@ -10,38 +10,38 @@ import json
 logger = logging.getLogger(__name__)
 
 
-def checkAndgetTrainginTask(userID, batchid):
-    q = db.session.query(Task.id).filter(Task.batch_id == batchid, Task.format_type == 1).subquery()
-    # Task1 = db.session.query(Completion.task_id).filter(Completion.user_id == userID, Completion.task_id.in_(
-    #     q))  # .delete(synchronize_session='fetch')
-    # q1 = db.session.query(Task.id).filter(Task.batch_id == batchid, Task.format_type == 1).all()
-    # for i in q1:
-    #     print(i)
-    # Taskidcompleted = db.session.query(Completion.task_id).filter(Completion.user_id == userID, Completion.task_id.in_(
-    #     q)).subquery()  # .delete(synchronize_session='fetch')
-    Taskcount = db.session.query(func.count(Completion.id)).filter(Completion.user_id == userID, Completion.task_id.in_(
-        q)).scalar()  # .delete(synchronize_session='fetch')
+# def checkAndgetTrainginTask(userID, batchid):
+#     q = db.session.query(Task.id).filter(Task.batch_id == batchid, Task.format_type == 1).subquery()
+#     # Task1 = db.session.query(Completion.task_id).filter(Completion.user_id == userID, Completion.task_id.in_(
+#     #     q))  # .delete(synchronize_session='fetch')
+#     # q1 = db.session.query(Task.id).filter(Task.batch_id == batchid, Task.format_type == 1).all()
+#     # for i in q1:
+#     #     print(i)
+#     # Taskidcompleted = db.session.query(Completion.task_id).filter(Completion.user_id == userID, Completion.task_id.in_(
+#     #     q)).subquery()  # .delete(synchronize_session='fetch')
+#     Taskcount = db.session.query(func.count(Completion.id)).filter(Completion.user_id == userID, Completion.task_id.in_(
+#         q)).scalar()  # .delete(synchronize_session='fetch')
 
-    if Taskcount >= 2:
-        print("Here 3", Taskcount)
-        w = db.session.query(Completion).filter(Completion.user_id == userID,
-                                                Completion.task_id.in_(q)).all()  # .delete(synchronize_session='fetch')
-        for r in w:
-            oldc = OldCompletion(user_id=r.user_id, task_id=r.task_id, data=r.data, completed_at=r.completed_at)
-            db.session.add(oldc)
-            db.session.delete(r)
-        db.session.commit()
-    # nextTask = db.session.query(Task).filter(Task.batch_id==batchid, Task.format_type == 1, Task.id.notin_(Taskidcompleted)).first()
-        nextTask = db.session.execute(
-            'SELECT * FROM TrainingTask WHERE batch_id=:batchid and TrainingTask.format_type == 1 and '
-            'id not in (select task_id from completions where user_id = :userID and '
-            'task_id in (select id from TrainingTask where batch_id= :batchid and TrainingTask.format_type == 1) ) order by id',
-            {'userID': userID,'batchid':batchid }).first()
-    # nextTask = db.session.execute(
-    #     'SELECT * FROM TrainingTask WHERE batch_id=:batchid and format_type == 1 ',
-    #     {'userID': userID, 'batchid': batchid}).first()
+#     if Taskcount >= 2:
+#         print("Here 3", Taskcount)
+#         w = db.session.query(Completion).filter(Completion.user_id == userID,
+#                                                 Completion.task_id.in_(q)).all()  # .delete(synchronize_session='fetch')
+#         for r in w:
+#             oldc = OldCompletion(user_id=r.user_id, task_id=r.task_id, data=r.data, completed_at=r.completed_at)
+#             db.session.add(oldc)
+#             db.session.delete(r)
+#         db.session.commit()
+#     # nextTask = db.session.query(Task).filter(Task.batch_id==batchid, Task.format_type == 1, Task.id.notin_(Taskidcompleted)).first()
+#         nextTask = db.session.execute(
+#             'SELECT * FROM TrainingTask WHERE batch_id=:batchid and TrainingTask.format_type == 1 and '
+#             'id not in (select task_id from completions where user_id = :userID and '
+#             'task_id in (select id from TrainingTask where batch_id= :batchid and TrainingTask.format_type == 1) ) order by id',
+#             {'userID': userID,'batchid':batchid }).first()
+#     # nextTask = db.session.execute(
+#     #     'SELECT * FROM TrainingTask WHERE batch_id=:batchid and format_type == 1 ',
+#     #     {'userID': userID, 'batchid': batchid}).first()
 
-    return nextTask
+#     return nextTask
 
 
 def savestage(id, userID, currentRobinIndex, taskArray, batchid):
